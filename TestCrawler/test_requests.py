@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
@@ -65,7 +67,79 @@ def test3():
         print(i, j)
 
 
+def test4():
+    """
+    https://ithelp.ithome.com.tw/articles/10203744
+    """
+
+    # r = requests.get('https://www.google.com/search?q=python3')
+
+    payload = {
+        'q': 'python3'
+    }
+    r = requests.get('https://www.google.com/search?', params=payload)
+
+    with open('searchContent.html', 'w+', encoding="utf-8") as f:
+        f.write(r.text)
+    print('saved')
+
+    r = requests.post('https://httpbin.org/post', data={'key': 'value'})
+    # r = requests.put('https://httpbin.org/put', data = {'key':'value'})
+    # r = requests.delete('https://httpbin.org/delete')
+    # r = requests.head('https://httpbin.org/get')
+    # r = requests.options('https://httpbin.org/get')
+    pprint(r.text)
+
+
+def test5():
+    """
+    https://ithelp.ithome.com.tw/articles/10204390
+    """
+
+    ua = UserAgent(verify_ssl=False)
+    headers = {"User-Agent": ua.chrome}
+    r = requests.get('https://www.google.com/search?q=python3', headers=headers)
+    with open('searchContent.html', 'w+', encoding="utf-8") as f:
+        f.write(r.text)
+    print('saved')
+
+    soup = BeautifulSoup(r.text, 'lxml')
+    a_title = soup.select('a h3')
+    for t in a_title:
+        print(t.text)
+    print('-----------------')
+
+    # ugly code here++++++++++++++++
+    a_list = soup.select('div#rso div.g div.rc div.r a')
+    new_list = []
+    """
+    remove some useless tags
+
+    tag we need is as below:
+        <a href="https://www.python.org/download/releases/3.0/" ping="/url?sa=t&amp;source=web&amp;rct=j&amp;url=https://www.python.org/download/releases/3.0/&amp;ved=2ahUKEwj2kvLaz43qAhV5ITQIHetZAlwQFjAAegQIAxAB">
+
+    tag we don't need has attr "class" as below:
+        <a class="GHDvEf" href="#" id="am-b0" aria-label="結果選項" aria-expanded="false" aria-haspopup="true" role="button" jsaction="m.tdd;keydown:m.hbke;keypress:m.mskpe" data-ved="2ahUKEwj2kvLaz43qAhV5ITQIHetZAlwQ7B0wAHoECAMQBA">
+        <a class="fl" href="https://translate.google.com/translate?hl=zh-TW&amp;sl=en&amp;u=https://www.python.org/download/releases/3.0/&amp;prev=search" ping="/url?sa=t&amp;source=web&amp;rct=j&amp;url=https://translate.google.com/translate%3Fhl%3Dzh-TW%26sl%3Den%26u%3Dhttps://www.python.org/download/releases/3.0/%26prev%3Dsearch&amp;ved=2ahUKEwj2kvLaz43qAhV5ITQIHetZAlwQ7gEwAHoECAMQCQ">翻譯這個網頁</a>
+    """
+    for a in a_list:
+        if not a.has_attr('class'):
+            new_list.append(a)
+    # ugly code here----------------
+
+    print('len(new_list):{}'.format(len(new_list)))
+    for a in new_list:
+        print('title', a.text)
+        print('href', a['href'])
+        r = requests.get(a['href'])
+        with open("".join(x for x in a.text if x.isalnum()) + '.html', 'w+', encoding="utf-8") as f:
+            f.write(r.text)
+            print('saved')
+
+
 if __name__ == "__main__":
     # test1()
     # test2()
-    test3()
+    # test3()
+    # test4()
+    test5()
