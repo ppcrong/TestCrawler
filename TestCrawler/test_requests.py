@@ -132,7 +132,7 @@ def test5():
         print('title', a.text)
         print('href', a['href'])
         r = requests.get(a['href'])
-        with open("".join(x for x in a.text if x.isalnum()) + '.html', 'w+', encoding="utf-8") as f:
+        with open("".join(x for x in a.text if (x.isalnum() or x in "._- ")) + '.html', 'w+', encoding="utf-8") as f:
             f.write(r.text)
             print('saved')
 
