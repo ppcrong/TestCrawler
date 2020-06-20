@@ -2,6 +2,7 @@ import os
 import shutil
 from pprint import pprint
 from urllib.parse import urlparse
+from urllib.request import urlretrieve
 
 import requests
 from bs4 import BeautifulSoup
@@ -238,6 +239,7 @@ def test8():
     img_url = 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png'
     img_name = 'google'
     download_img(img_url=img_url, img_name=img_name, ext_name='png')
+    download_img2(img_url=img_url, img_name=img_name + '2', ext_name='png')
 
 
 def download_img(img_url: str, img_name: str, ext_name: str):
@@ -253,6 +255,19 @@ def download_img(img_url: str, img_name: str, ext_name: str):
     try:
         with open('./image/' + img_name + '.' + ext_name, 'wb') as out_file:
             shutil.copyfileobj(r.raw, out_file)
+    except:
+        print('can not save img', img_url)
+
+
+def download_img2(img_url: str, img_name: str, ext_name: str):
+    # create image folder if not exist
+    folder = './image2/'
+    if not os.path.isdir(folder):
+        os.mkdir(folder)
+
+    print('save img to ./image2/' + img_name + '.' + ext_name)
+    try:
+        urlretrieve(url=img_url, filename='./image2/' + img_name + '.' + ext_name)
     except:
         print('can not save img', img_url)
 
