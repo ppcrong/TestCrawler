@@ -233,6 +233,8 @@ def test7(loop=1):
     for page in range(1, loop + 1):
         url = get_all_title_href(url=url)
 
+
+def test8():
     img_url = 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png'
     img_name = 'google'
     download_img(img_url=img_url, img_name=img_name, ext_name='png')
@@ -262,4 +264,5 @@ if __name__ == "__main__":
     # test4()
     # test5()
     # test6()
-    test7(2)
+    # test7(2)
+    test8()
