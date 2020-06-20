@@ -141,9 +141,39 @@ def test5():
             print('saved')
 
 
+def test6():
+    """
+    my own practice
+    """
+
+    ua = UserAgent(verify_ssl=False)
+    headers = {"User-Agent": ua.chrome}
+    res = requests.get("https://weekly.manong.io/issues/", headers=headers)
+
+    # save result to html for analysis
+    # with open('test6.html', 'w+', encoding="utf-8") as f:
+    #     f.write(res.text)
+    # print('test6.html saved')
+
+    content = res.content.decode()
+    html = etree.HTML(content)
+
+    # get the newest title and link
+    new_title = html.xpath('/html/body/div[2]/h4/a/text()')
+    new_href = html.xpath('/html/body/div[2]/h4/a/@href')
+    if len(new_title) > 0 and len(new_href) > 0:
+        print('最新一期：{}'.format(new_title[0]))
+        print('最新連結：{}'.format(new_href[0]))
+        res = requests.get(new_href[0], headers=headers)
+        with open("".join(x for x in new_title[0] if (x.isalnum() or x in "._- ")) + '.html', 'w+', encoding="utf-8") as f:
+            f.write(res.text)
+            print('({}) 已存檔'.format(f.name))
+
+
 if __name__ == "__main__":
     # test1()
     # test2()
     # test3()
     # test4()
-    test5()
+    # test5()
+    test6()
