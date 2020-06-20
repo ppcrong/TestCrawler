@@ -1,4 +1,6 @@
+import os
 from pprint import pprint
+from urllib.parse import urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -83,9 +85,8 @@ def test4():
     }
     r = requests.get('https://www.google.com/search?', params=payload)
 
-    with open('searchContent.html', 'w+', encoding="utf-8") as f:
-        f.write(r.text)
-    print('saved')
+    # save result to html for analysis
+    save_text('test4.html', r.text)
 
     r = requests.post('https://httpbin.org/post', data={'key': 'value'})
     # r = requests.put('https://httpbin.org/put', data = {'key':'value'})
@@ -103,9 +104,9 @@ def test5():
     ua = UserAgent(verify_ssl=False)
     headers = {"User-Agent": ua.chrome}
     r = requests.get('https://www.google.com/search?q=python3', headers=headers)
-    with open('searchContent.html', 'w+', encoding="utf-8") as f:
-        f.write(r.text)
-    print('saved')
+
+    # save result to html for analysis
+    save_text('test5.html', r.text)
 
     soup = BeautifulSoup(r.text, 'lxml')
     a_title = soup.select('a h3')
@@ -151,9 +152,7 @@ def test6():
     res = requests.get("https://weekly.manong.io/issues/", headers=headers)
 
     # save result to html for analysis
-    # with open('test6.html', 'w+', encoding="utf-8") as f:
-    #     f.write(res.text)
-    # print('test6.html saved')
+    save_text('test6.html', res.text)
 
     content = res.content.decode()
     html = etree.HTML(content)
@@ -171,10 +170,60 @@ def test6():
             print('({}) 已存檔'.format(f.name))
 
 
+def save_text(filename: str, text: str):
+    with open(filename, 'w+', encoding="utf-8") as f:
+        f.write(text)
+    print('{} saved'.format(filename))
+
+
+def get_all_title_href(url):
+    """
+    https://ithelp.ithome.com.tw/articles/10204709
+    """
+
+    ua = UserAgent(verify_ssl=False)
+    headers = {"User-Agent": ua.chrome}
+
+    r = requests.get(url, headers=headers)
+    soup = BeautifulSoup(r.text, "html.parser")
+
+    # get title href
+    results = soup.select("div.title")
+    urlp = urlparse(url)
+
+    # save result to html for analysis
+    save_text(os.path.basename(urlp.path), r.text)
+
+    print('++++++++++++++++++++{}++++++++++++++++++++'.format(os.path.basename(urlp.path)))
+    for item in results:
+        a_item = item.select_one("a")
+        title = item.text
+        if a_item:
+            print(title, 'https://www.ptt.cc' + a_item.get('href'))
+    print('--------------------{}--------------------\n\n'.format(os.path.basename(urlp.path)))
+
+    # get up btn href and return
+    btn = soup.select('div.btn-group > a')
+    up_page_href = btn[3]['href']
+    return 'https://www.ptt.cc' + up_page_href
+
+
+def test7(loop=1):
+    """
+    https://ithelp.ithome.com.tw/articles/10204709
+    """
+
+    url = "https://www.ptt.cc/bbs/Food/index.html"
+
+    for page in range(1, loop + 1):
+        url = get_all_title_href(url=url)
+
+
 if __name__ == "__main__":
     # test1()
     # test2()
     # test3()
     # test4()
     # test5()
-    test6()
+    # test6()
+    test7(2)
