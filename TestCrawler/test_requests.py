@@ -165,7 +165,8 @@ def test6():
         print('最新一期：{}'.format(new_title[0]))
         print('最新連結：{}'.format(new_href[0]))
         res = requests.get(new_href[0], headers=headers)
-        with open("".join(x for x in new_title[0] if (x.isalnum() or x in "._- ")) + '.html', 'w+', encoding="utf-8") as f:
+        with open("".join(x for x in new_title[0] if (x.isalnum() or x in "._- ")) + '.html', 'w+',
+                  encoding="utf-8") as f:
             f.write(res.text)
             print('({}) 已存檔'.format(f.name))
 
