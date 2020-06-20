@@ -199,13 +199,27 @@ def get_all_title_href(url):
         a_item = item.select_one("a")
         title = item.text
         if a_item:
-            print(title, 'https://www.ptt.cc' + a_item.get('href'))
+            print('https://www.ptt.cc' + a_item.get('href'))
+            get_article_content('https://www.ptt.cc' + a_item.get('href'))
     print('--------------------{}--------------------\n\n'.format(os.path.basename(urlp.path)))
 
     # get up btn href and return
     btn = soup.select('div.btn-group > a')
     up_page_href = btn[3]['href']
     return 'https://www.ptt.cc' + up_page_href
+
+
+def get_article_content(article_url):
+    ua = UserAgent(verify_ssl=False)
+    headers = {"User-Agent": ua.chrome}
+    r = requests.get(article_url, headers=headers)
+    soup = BeautifulSoup(r.text, "lxml")
+    results = soup.select('span.article-meta-value')
+    if results:
+        print('作者:', results[0].text)
+        print('看板:', results[1].text)
+        print('標題:', results[2].text)
+        print('時間:', results[3].text)
 
 
 def test7(loop=1):
