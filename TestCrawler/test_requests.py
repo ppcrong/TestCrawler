@@ -1,4 +1,5 @@
 import os
+import shutil
 from pprint import pprint
 from urllib.parse import urlparse
 
@@ -231,6 +232,27 @@ def test7(loop=1):
 
     for page in range(1, loop + 1):
         url = get_all_title_href(url=url)
+
+    img_url = 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png'
+    img_name = 'google'
+    download_img(img_url=img_url, img_name=img_name, ext_name='png')
+
+
+def download_img(img_url: str, img_name: str, ext_name: str):
+    # create image folder if not exist
+    folder = './image/'
+    if not os.path.isdir(folder):
+        os.mkdir(folder)
+
+    ua = UserAgent(verify_ssl=False)
+    headers = {"User-Agent": ua.chrome}
+    r = requests.get(img_url, stream=True, headers=headers)
+    print('save img to ./image/' + img_name + '.' + ext_name)
+    try:
+        with open('./image/' + img_name + '.' + ext_name, 'wb') as out_file:
+            shutil.copyfileobj(r.raw, out_file)
+    except:
+        print('can not save img', img_url)
 
 
 if __name__ == "__main__":
