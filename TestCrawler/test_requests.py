@@ -5,12 +5,12 @@ from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from lxml import etree
 
-"""
-https://medium.com/@yanweiliu/python%E7%88%AC%E8%9F%B2%E5%AD%B8%E7%BF%92%E7%AD%86%E8%A8%98-%E4%B8%80-beautifulsoup-1ee011df8768
-"""
-
 
 def test1():
+    """
+    https://medium.com/@yanweiliu/python%E7%88%AC%E8%9F%B2%E5%AD%B8%E7%BF%92%E7%AD%86%E8%A8%98-%E4%B8%80-beautifulsoup-1ee011df8768
+    """
+
     url = "https://jwlin.github.io/py-scraping-analysis-book/ch1/connect.html"
     rsp = requests.get(url)
     print('rsp.text:{}'.format(rsp.text))
@@ -29,6 +29,10 @@ def test1():
 
 
 def test2():
+    """
+    https://medium.com/@yanweiliu/python%E7%88%AC%E8%9F%B2%E5%AD%B8%E7%BF%92%E7%AD%86%E8%A8%98-%E4%B8%80-beautifulsoup-1ee011df8768
+    """
+
     payload = {'key1': 'value1', 'key2': 'value2'}
     # 將查詢參數加入 GET 請求中
     html = requests.get("http://httpbin.org/get", params=payload)
