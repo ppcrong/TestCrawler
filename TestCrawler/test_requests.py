@@ -278,6 +278,6 @@ if __name__ == "__main__":
     # test3()
     # test4()
     # test5()
-    # test6()
+    test6()
     # test7(2)
-    test8()
+    #test8()
